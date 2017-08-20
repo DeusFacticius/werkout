@@ -1,0 +1,67 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+cable_shoulder_press:
+  name: Cable Shoulder Press
+  notes: Long rests.
+  workout: friday
+
+single_leg_leg_press:
+  name: Single-leg Leg Press
+  notes: These suck.
+  workout: monday
+
+calf_raise:
+  name: Seated Calf Raises
+  notes:
+  workout: monday
+
+leg_curl:
+  name: Leg Curls
+  notes: Hamwich
+  workout: monday
+
+lat_pulldown:
+  name: Lat Pulldown
+  notes: Grip weak.
+  workout: wednesday
+
+chest_press:
+  name: Chest Press
+  notes: sore boobs.
+  workout: wednesday
+
+rdl:
+  name: Romanian Deadlift
+  notes: form sucks.
+  workout: wednesday
+
+arnold_press:
+  name: Arnold Press
+  notes: Arnold did these.
+  workout: friday
+
+preacher_curl:
+  name: Preacher Curl Machine
+  notes: curls for gurls
+  workout: friday
+
+tricep_ext:
+  name: Seated Tricep Extension Machine
+  notes:
+  workout: friday
+
+leg_raises1:
+  name: Lying Leg Raises
+  notes: bruce lee did these
+  workout: monday
+
+leg_raises2:
+  name: Lying Leg Raises
+  notes: Again
+  workout: wednesday
+
+leg_raises3:
+  name: Lying Leg Raises
+  notes: duh
+  workout: friday
+

@@ -1,0 +1,33 @@
+%h1 Listing cardios
+
+%table
+  %thead
+    %tr
+      %th Name
+      %th Duration
+      %th Resistance level
+      %th Notes
+      %th Distance
+      %th Calories
+      %th Workout
+      %th
+      %th
+      %th
+
+  %tbody
+    - @cardios.each do |cardio|
+      %tr
+        %td= cardio.name
+        %td= cardio.duration
+        %td= cardio.resistance_level
+        %td= cardio.notes
+        %td= cardio.distance
+        %td= cardio.calories
+        %td= cardio.workout
+        %td= link_to 'Show', cardio
+        %td= link_to 'Edit', edit_cardio_path(cardio)
+        %td= link_to 'Destroy', cardio, method: :delete, data: { confirm: 'Are you sure?' }
+
+%br
+
+= link_to 'New Cardio', new_cardio_path

@@ -1,0 +1,28 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+xt_1: &xt
+  name: X-Trainer
+  duration: 1002
+  resistance_level: 8
+  notes: shitty
+  distance: 1.01
+  calories: 258
+  workout: monday
+
+xt_2:
+  <<: *xt
+  duration: 1048
+  resistance_level: 10
+  distance: 1.25
+  calories: 304
+  workout: wednesday
+
+xt_3:
+  <<: *xt
+  duration: 1107
+  resistance_level: 12
+  distance: 1.51
+  calories: 340
+  workout: friday
+
+

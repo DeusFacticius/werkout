@@ -1,0 +1,164 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+csp_1: &csp
+  weight: 35
+  reps: 12
+  target_reps: 12
+  notes:
+  exercise: cable_shoulder_press
+
+csp_2:
+  <<: *csp
+
+csp_3:
+  <<: *csp
+  reps: 10
+
+sllp_1: &sllp
+  weight: 190
+  reps: 12
+  target_reps: 12
+  notes:
+  exercise: single_leg_leg_press
+
+sllp_2:
+  <<: *sllp
+
+sllp_3:
+  <<: *sllp
+  reps: 11
+  notes: Right leg failed early
+
+cr_1: &cr
+  weight: 210
+  reps: 18
+  target_reps: 18
+  notes:
+  exercise: calf_raise
+
+cr_2:
+  <<: *cr
+  reps: 16
+
+lc_1: &lc
+  weight: 80
+  reps: 10
+  target_reps: 10
+  notes:
+  exercise: leg_curl
+
+lc_2:
+  <<: *lc
+  reps: 8
+
+lp_1: &lp
+  weight: 160
+  reps: 12
+  target_reps: 12
+  notes:
+  exercise: lat_pulldown
+
+lp_2:
+  <<: *lp
+
+lp_3:
+  <<: *lp
+  reps: 8
+
+cp_1: &cp
+  weight: 180
+  reps: 12
+  target_reps: 12
+  notes:
+  exercise: chest_press
+
+cp_2:
+  <<: *cp
+
+cp_3:
+  <<: *cp
+  reps: 11
+
+rdl_1: &rdl
+  weight: 95
+  reps: 12
+  target_reps: 12
+  notes:
+  exercise: rdl
+
+rdl_2:
+  <<: *rdl
+
+rdl_3:
+  <<: *rdl
+
+ap_1: &ap
+  weight: 40
+  reps: 12
+  target_reps: 12
+  notes:
+  exercise: arnold_press
+
+ap_2:
+  <<: *ap
+
+ap_3:
+  <<: *ap
+  reps: 9
+
+pc_1: &pc
+  weight: 70
+  reps: 12
+  target_reps: 12
+  notes:
+  exercise: preacher_curl
+
+pc_2:
+  <<: *pc
+
+pc_3:
+  <<: *pc
+  reps: 10
+
+te_1: &te
+  weight: 80
+  reps: 12
+  target_reps: 12
+  notes:
+  exercise: tricep_ext
+
+te_2:
+  <<: *te
+
+te_3:
+  <<: *te
+
+lr_1_1: &lr
+  weight:
+  reps: 15
+  target_reps: 15
+  notes:
+  exercise: leg_raises1
+
+lr_1_2:
+  <<: *lr
+  reps: 12
+
+lr_2_1:
+  <<: *lr
+  exercise: leg_raises2
+
+lr_2_2:
+  <<: *lr
+  reps: 13
+  exercise: leg_raises2
+
+lr_3_1:
+  <<: *lr
+  exercise: leg_raises3
+
+lr_3_2:
+  <<: *lr
+  reps: 15
+  exercise: leg_raises3
+

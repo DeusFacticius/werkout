@@ -1,0 +1,29 @@
+%h1 Listing exercise_sets
+
+%table
+  %thead
+    %tr
+      %th Weight
+      %th Reps
+      %th Target reps
+      %th Notes
+      %th Exercise
+      %th
+      %th
+      %th
+
+  %tbody
+    - @exercise_sets.each do |exercise_set|
+      %tr
+        %td= exercise_set.weight
+        %td= exercise_set.reps
+        %td= exercise_set.target_reps
+        %td= exercise_set.notes
+        %td= exercise_set.exercise
+        %td= link_to 'Show', exercise_set
+        %td= link_to 'Edit', edit_exercise_set_path(exercise_set)
+        %td= link_to 'Destroy', exercise_set, method: :delete, data: { confirm: 'Are you sure?' }
+
+%br
+
+= link_to 'New Exercise set', new_exercise_set_path

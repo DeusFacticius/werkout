@@ -1,0 +1,21 @@
+#workout-root
+  %h2
+    = @workout.split_name
+    %small= @workout.workout_date.inspect
+  %p
+    Notes:
+    = @workout.notes
+  .exercises
+    - @workout.exercises.each do |exercise|
+      .panel.panel-default[exercise]
+        .panel-heading
+          %h5.panel-title= exercise.name
+        .panel-body
+          %p= exercise.notes
+          %ul.list-group
+            - exercise.exercise_sets.each do |set|
+              %li.list-group-item[set]
+                %p
+                  #{set.weight} x #{set.reps}
+                  %span.glyphicon{class: (set.reps >= set.target_reps ? 'glyphicon-ok' : 'glyphicon-remove')}
+                %p.notes= set.notes

@@ -1,0 +1,35 @@
+%p#notice= notice
+
+%p
+  %b Workout Date:
+  = @workout.workout_date
+
+%p
+  %b Time Stated:
+  = @workout.time_started
+%p
+  %b Time Ended:
+  = @workout.time_ended
+%p
+  %b Split name:
+  = @workout.split_name
+%p
+  %b Notes:
+  = @workout.notes
+
+.panel.panel-default
+  .panel-heading
+    %h3.panel-title Exercises
+  .panel-body
+    %ul
+      - @workout.exercises.each do |ex|
+        %li[ex]
+          = ex.name
+    %button.btn.btn-default.pull-right
+      %span.glyphicon.glyphicon-plus
+      Add Exercise
+
+
+= link_to 'Edit', edit_workout_path(@workout)
+\|
+= link_to 'Back', workouts_path

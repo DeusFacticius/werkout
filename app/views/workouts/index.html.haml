@@ -1,0 +1,29 @@
+%h1 Listing workouts
+
+%table.table
+  %thead
+    %tr
+      %th Date
+      %th Time Started
+      %th Time Ended
+      %th Split Name
+      %th Notes
+      %th
+      %th
+      %th
+
+  %tbody
+    - @workouts.each do |workout|
+      %tr
+        %td= workout.workout_date
+        %td= workout.time_started
+        %td= workout.time_ended
+        %td= workout.split_name
+        %td= workout.notes
+        %td= link_to 'Show', workout
+        %td= link_to 'Edit', edit_workout_path(workout)
+        %td= link_to 'Destroy', workout, method: :delete, data: { confirm: 'Are you sure?' }
+
+%br
+
+= link_to 'New Workout', new_workout_path

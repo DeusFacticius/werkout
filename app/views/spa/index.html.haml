@@ -1,0 +1,5 @@
+#app-root
+  #workouts
+    %ul
+      %li(v-for="w in workouts")
+        {{ w.workout_date }} -- {{ w.time_started }} -- {{ w.time_ended }}

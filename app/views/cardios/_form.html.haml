@@ -1,0 +1,31 @@
+= form_for @cardio do |f|
+  - if @cardio.errors.any?
+    #error_explanation
+      %h2= "#{pluralize(@cardio.errors.count, "error")} prohibited this cardio from being saved:"
+      %ul
+        - @cardio.errors.full_messages.each do |message|
+          %li= message
+
+  .field
+    = f.label :name
+    = f.text_field :name
+  .field
+    = f.label :duration
+    = f.number_field :duration
+  .field
+    = f.label :resistance_level
+    = f.number_field :resistance_level
+  .field
+    = f.label :notes
+    = f.text_area :notes
+  .field
+    = f.label :distance
+    = f.text_field :distance
+  .field
+    = f.label :calories
+    = f.text_field :calories
+  .field
+    = f.label :workout
+    = f.text_field :workout
+  .actions
+    = f.submit 'Save'

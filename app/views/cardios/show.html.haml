@@ -1,0 +1,27 @@
+%p#notice= notice
+
+%p
+  %b Name:
+  = @cardio.name
+%p
+  %b Duration:
+  = @cardio.duration
+%p
+  %b Resistance level:
+  = @cardio.resistance_level
+%p
+  %b Notes:
+  = @cardio.notes
+%p
+  %b Distance:
+  = @cardio.distance
+%p
+  %b Calories:
+  = @cardio.calories
+%p
+  %b Workout:
+  = @cardio.workout
+
+= link_to 'Edit', edit_cardio_path(@cardio)
+\|
+= link_to 'Back', cardios_path

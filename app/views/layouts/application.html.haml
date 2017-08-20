@@ -1,0 +1,21 @@
+!!! 5
+%html{ :lang => 'en' }
+  %head
+    %meta{ :charset => 'utf-8' }
+    %meta{ :name => 'viewport', :content => 'width=device-width, initial-scale=1, shrink-to-fit=no'}
+    %title Werkout
+    = stylesheet_link_tag 'application', media: 'all'
+    = csrf_meta_tags
+  %body
+    / This is indeed the HAML layout
+    %nav.navbar.navbar-default
+      .container
+        %ul.nav.navbar-nav
+          %li= link_to 'Workouts', workouts_path
+          %li= link_to 'Exercises', exercises_path
+          %li= link_to 'Sets', exercise_sets_path
+          %li= link_to 'Cardios', cardios_path
+    #content.container
+      = yield
+    / Keep scripts as last element of <body>
+    = javascript_include_tag 'application'
