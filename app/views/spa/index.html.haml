@@ -1,5 +1,17 @@
-#app-root
-  #workouts
-    %ul
-      %li(v-for="w in workouts")
-        {{ w.workout_date }} -- {{ w.time_started }} -- {{ w.time_ended }}
+#workout-root
+  %h2
+    {{ workout.split_name }}
+    %small= {{ workout.workout_date }}
+  %p.notes
+    {{ workout.notes }}
+  .exercises
+    .panel.panel-default.exercise{'v-for': 'exercise in workout.exercises', ':class': 'exercise.id'}
+      .panel-heading
+        %h5.panel-title= {{ exercise.name }}
+      .panel-body
+        %p= {{ exercise.notes }}
+        %ul.list-group
+          %li.list-group-item.exercise-set{'v-for': 'set in exercise.exercise_sets'}
+            %p
+              {{ set.weight }} &times; {{ set.reps }}
+

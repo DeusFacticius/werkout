@@ -17,5 +17,10 @@
           %li= link_to 'Cardios', cardios_path
     #content.container
       = yield
+    / Hidden top-level resources
+    #resources
+      = yield :resources
     / Keep scripts as last element of <body>
     = javascript_include_tag 'application'
+    / Page specific scripts
+    = yield :scripts

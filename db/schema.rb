@@ -33,18 +33,20 @@ ActiveRecord::Schema.define(version: 20170816204851) do
     t.decimal  "target_reps"
     t.text     "notes"
     t.integer  "exercise_id"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.integer  "sort_order",  default: 0, null: false
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
   end
 
   add_index "exercise_sets", ["exercise_id"], name: "index_exercise_sets_on_exercise_id"
 
   create_table "exercises", force: :cascade do |t|
-    t.string   "name",       null: false
+    t.string   "name",                   null: false
     t.text     "notes"
     t.integer  "workout_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.integer  "sort_order", default: 0, null: false
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
   end
 
   add_index "exercises", ["workout_id"], name: "index_exercises_on_workout_id"

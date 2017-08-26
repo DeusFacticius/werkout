@@ -16,6 +16,47 @@
             - exercise.exercise_sets.each do |set|
               %li.list-group-item[set]
                 %p
-                  #{set.weight} x #{set.reps}
+                  #{set.weight} &times; #{set.reps}
                   %span.glyphicon{class: (set.reps >= set.target_reps ? 'glyphicon-ok' : 'glyphicon-remove')}
                 %p.notes= set.notes
+  .controls.clearfix
+    %button.btn.btn-default.pull-right{'v-on:click' => 'addExercise'}
+      %span.glyphicon.glyphicon-plus
+      Add Exercise
+    %button.btn.btn-default.pull-right{ data: {toggle: 'modal', target: '#enter-name-modal', backdrop: 'false'}}
+      Alt modal
+
+- content_for :resources do
+  #enter-name-modal.modal.fade(role='dialog')
+    .modal-dialog(role='document')
+      .modal-content
+        .modal-header
+          %button.close{type: 'button', data: {dismiss: 'modal'}} &times;
+          %h4.modal-title Add Exercise
+        .modal-body
+          %p
+            Exercise Name:
+            %input{type: 'text', name: 'workout_name', placeholder: 'Exercise name'}
+        .modal-footer
+          %button.btn.btn-default{data: {dismiss: 'modal'}} Cancel
+          %button.btn.btn-primary{'v-on:click': 'createExercise'} Create
+/ Workout json:
+/ #{@workout.to_json}
+
+- content_for :scripts do
+  -# = javascript_include_tag :spa
+  :coffee
+    window.wapp = new Vue({
+      el: '#workout-root',
+      data: {
+        workout: {}
+      },
+      methods: {
+        addExercise: (event) ->
+          $('#enter-name-modal').modal()
+      }
+    })
+    $(() ->
+      $.getJSON("#{workout_path(@workout)}").then (data,xhr) ->
+        wapp.data = data
+    )

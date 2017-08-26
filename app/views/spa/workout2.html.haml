@@ -1,0 +1,71 @@
+#workout-root
+  %h2
+    {{ workout.split_name }}
+    %small {{ workout.workout_date }}
+  %p.notes
+    {{ workout.notes }}
+  .exercises
+    %div{'is': 'exercise', 'v-for': 'exercise in workout.exercises', ':exercise': 'exercise'}
+
+%script#exercise-template{type: 'text/x-template'}
+  .panel.panel-default.exercise{':id': '"exercise-" + exercise.id'}
+    .panel-heading
+      %h5.panel-title {{ exercise.name }}
+    .panel-body
+      %p {{ exercise.notes }}
+      %ul.list-group
+        %li{'is': 'exercise-set', 'v-for': 'set in exercise.exercise_sets', ':eset': 'set'}
+
+%script#eset-template{type: 'text/x-template'}
+  %li.list-group-item.exercise-set{':id': '"exercise-set-" + eset.id'}
+    %p
+      %span.weight_x{'v-show': 'isWeighted'}
+        {{ eset.weight }} &times;
+      {{ eset.reps }}
+      %span.glyphicon{':class': '{"glyphicon-ok": isSuccess, "glyphicon-remove": !isSuccess}'}
+
+
+- content_for :scripts do
+  :coffee
+    this.wapp = null
+    this.getMyData = () ->
+      $.getJSON("#{workout_path(@workout)}").then (data,jsxhr) ->
+        window.myData = data.workout
+    Vue.component('exercise-set', {
+      template: '#eset-template',
+      props: ['eset'],
+      computed: {
+        isSuccess: () ->
+          this.eset.target_reps && this.eset.reps >= this.eset.target_reps
+        isWeighted: () ->
+          this.eset.weight
+      }
+    })
+    Vue.component('exercise', {
+      template: '#exercise-template',
+      props: ['exercise']
+    })
+    this.doMyInit = () ->
+      window.wapp = new Vue({
+        el: '#workout-root',
+        data: {
+          workout: {
+            workout_date: null,
+            time_started: null,
+            time_ended: null,
+            exercises: [],
+            cardios: [],
+            notes: null
+          }
+        },
+        methods: {
+          addExercise: (event) ->
+            $('#enter-name-modal').modal()
+        },
+        created: () ->
+          self = this
+          $.getJSON('#{workout_path(@workout)}', {full: true}).then (data,jsxhr) ->
+            self.workout = data
+
+      })
+    $(doMyInit)

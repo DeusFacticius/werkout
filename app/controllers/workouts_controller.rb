@@ -63,7 +63,11 @@ class WorkoutsController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_workout
-    @workout = Workout.find(params[:id])
+    query = Workout
+    if params[:full]
+      query = query.includes(exercises: [:exercise_sets])
+    end
+    @workout = query.find(params[:id])
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

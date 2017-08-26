@@ -6,6 +6,7 @@ class CreateExerciseSets < ActiveRecord::Migration
       t.decimal :target_reps
       t.text :notes
       t.references :exercise, index: true, foreign_key: true
+      t.integer :sort_order, null: false, default: 0
 
       t.timestamps null: false
     end

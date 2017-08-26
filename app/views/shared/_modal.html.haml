@@ -1,0 +1,15 @@
+.modal.fade(role='dialog')
+  .model-dialog(role='document')
+    .modal-content
+      .modal-header
+        %button.close{type: 'button', data: {dismiss: 'modal'}} %times;
+        - if content_for? :header
+          = yield :header
+        - else
+          %h4.modal-title= (defined?(title) && title) || nil
+      .modal-body
+        = yield
+      .modal-footer
+        %button.btn.btn-default{data: {dismiss: 'modal'}} Cancel
+        - if content_for? :footer
+          = yield :footer
