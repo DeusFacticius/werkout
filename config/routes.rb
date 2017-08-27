@@ -4,7 +4,12 @@ Rails.application.routes.draw do
   resources :workouts
   resources :cardios
   resources :exercise_sets
-  resources :exercises
+  resources :exercises do
+    collection do
+      get 'most_recent_with_name'
+      get 'names'
+    end
+  end
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

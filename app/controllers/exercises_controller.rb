@@ -59,15 +59,25 @@ class ExercisesController < ApplicationController
     end
   end
 
-  def suggest_name
-    @names = Exercise.suggest_names(params[:term])
+  def names
+    @names = Exercise.names
     render json: @names
+  end
+
+  def most_recent_with_name
+    name = params[:name]
+    @exercise = Exercise.includes(:exercise_sets).most_recent_with_name!(name)
+    render :show
   end
 
   private
 
   # Use callbacks to share common setup or constraints between actions.
   def set_exercise
+    src = Exercise
+    if params[:full]
+      src = Exercise.includes(:exercise_sets, :workout)
+    end
     @exercise = Exercise.find(params[:id])
   end
 

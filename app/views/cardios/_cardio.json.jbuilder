@@ -1,0 +1,1 @@
+json.extract! cardio, :id, :name, :duration, :resistance_level, :distance, :calories, :workout_id, :created_at, :updated_at

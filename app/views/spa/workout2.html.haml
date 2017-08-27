@@ -1,16 +1,36 @@
 #workout-root
-  %h2
-    {{ workout.split_name }}
-    %small {{ workout.workout_date }}
-  %p.notes
-    {{ workout.notes }}
-  .exercises
-    %div{'is': 'exercise', 'v-for': 'exercise in workout.exercises', ':exercise': 'exercise'}
+  %div{'is': 'workout', ':workout': 'workout'}
+  .controls
+    %button.btn.btn-default{'@click': 'showAddExerciseModal'} Add Exercise
+  - footer = capture do
+    %button.btn.btn-primary{data: {dismiss: 'modal'}, '@click': 'addExercise'} Add Exercise
+  = render partial: 'shared/enter_name_modal', layout: 'shared/modal', locals: {title: 'Add Exercise', footer: footer, modal_id: 'enter-name-modal'}
+
+
+%script#workout-template{type: 'text/x-template'}
+  .workout{':class': '"workout-" + workout.id', ':id': '"workout-" + workout.id'}
+    %h2
+      {{ workout.split_name }}
+      %small {{ workout.workout_date }}
+    %p.notes
+      {{ workout.notes }}
+    .exercises
+      %div{'is': 'exercise', 'v-for': 'exercise in workout.exercises', ':exercise': 'exercise'}
 
 %script#exercise-template{type: 'text/x-template'}
   .panel.panel-default.exercise{':id': '"exercise-" + exercise.id'}
     .panel-heading
       %h5.panel-title {{ exercise.name }}
+      .dropdown.pull-right
+        %button.btn.btn-default.dropdown-toggle{data: {toggle: 'dropdown'}}
+          Actions
+          %span.glyphicon.glyphicon-plus
+        %ul.dropdown-menu
+          %li
+            %a.destroy{href: '#', '@click': '$emit("my.destroy.exercise",exercise)'}
+              Delete
+              %span.glyphicon.glyphicon-remove
+
     .panel-body
       %p {{ exercise.notes }}
       %ul.list-group
@@ -24,48 +44,14 @@
       {{ eset.reps }}
       %span.glyphicon{':class': '{"glyphicon-ok": isSuccess, "glyphicon-remove": !isSuccess}'}
 
-
 - content_for :scripts do
   :coffee
-    this.wapp = null
-    this.getMyData = () ->
-      $.getJSON("#{workout_path(@workout)}").then (data,jsxhr) ->
-        window.myData = data.workout
-    Vue.component('exercise-set', {
-      template: '#eset-template',
-      props: ['eset'],
-      computed: {
-        isSuccess: () ->
-          this.eset.target_reps && this.eset.reps >= this.eset.target_reps
-        isWeighted: () ->
-          this.eset.weight
-      }
-    })
-    Vue.component('exercise', {
-      template: '#exercise-template',
-      props: ['exercise']
-    })
-    this.doMyInit = () ->
-      window.wapp = new Vue({
-        el: '#workout-root',
-        data: {
-          workout: {
-            workout_date: null,
-            time_started: null,
-            time_ended: null,
-            exercises: [],
-            cardios: [],
-            notes: null
-          }
-        },
-        methods: {
-          addExercise: (event) ->
-            $('#enter-name-modal').modal()
-        },
-        created: () ->
-          self = this
-          $.getJSON('#{workout_path(@workout)}', {full: true}).then (data,jsxhr) ->
-            self.workout = data
+    $ () ->
+      doMyInit("#{workout_path(@workout)}")
 
-      })
-    $(doMyInit)
+
+
+-# content_for :resources do
+-#  - footer = capture do
+-#    %button.btn.btn-primary{data: {}, '@click': 'addExerciseClicked'} Add Exercise
+-#  = render partial: 'shared/enter_name_modal', layout: 'shared/modal', locals: {title: 'Add Exercise', footer: footer, modal_id: 'enter-name-modal'}
