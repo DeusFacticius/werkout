@@ -22,3 +22,34 @@
 #content {
   padding-bottom: 1.5em;
 }
+
+[v-cloak] {
+  display: none;
+}
+
+$animDur: 2s;
+
+.basic-fx-enter-active, .basic-fx-leave-active {
+  transition: opacity $animDur;
+}
+
+.basic-fx-leave-active {
+  position: absolute;
+}
+
+.basic-fx-enter, .basic-fx-leave-to {
+  opacity: 0;
+}
+
+.basic-fx-move {
+  transition: transform $animDur;
+}
+
+.exercise {
+  transition: all $animDur;
+  width: 100%;
+}
+
+.exercises {
+  position: relative;
+}

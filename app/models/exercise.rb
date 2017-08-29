@@ -32,7 +32,7 @@ class Exercise < ActiveRecord::Base
 
   def ensure_sort_order_has_value
     if new_record? && self.sort_order.blank?
-      self.sort_order ||= Exercise.where(workout_id: workout_id).maximum(:sort_order) + 1
+      self.sort_order ||= (Exercise.where(workout_id: workout_id).maximum(:sort_order) || 0) + 1
     end
   end
 

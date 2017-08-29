@@ -1,4 +1,47 @@
 #workout-root
+  .workout{':class': 'workoutIdentifier', ':id': 'workoutIdentifier'}
+    %h2
+      {{ workout.split_name }}
+      %small {{ workout.workout_date }}
+    %p.notes
+      {{ workout.notes }}
+    .exercises
+      .exercise{'v-for': 'exercise in workout.exercises', ':class': 'identExercise(exercise)', ':id': 'identForExercise(exercise)'}
+        .panel.panel-default
+          .panel-heading.clearfix
+            %h5.panel-title.pull-left {{ exercise.name }}
+            .exercise-header-controls.pull-right
+              %button.btn.btn-default{'@click': 'onDestroyExercise(exercise)'}
+                %span.glyphicon.glyphicon-remove
+          .panel-body
+            %p.notes {{ exercise.notes }}
+          %ul.list-group.exercise-sets
+            %li.list-group-item.clearfix{'v-for': 'eset in exercise.exercise_sets', ':class': 'identExerciseSet(eset)', ':id': 'identExerciseSet(eset)'}
+              %p.pull-left
+                %span.weight{'v-show': 'isWeighted(eset)'}
+                  {{ eset.weight }} &times;
+                %span.reps
+                  {{ eset.reps }}
+                %span.glyphicon{':class': 'glyphiconForSet(eset)'}
+              .btn-group.pull-right.exercise-set-controls{role: 'group'}
+                %button.btn.btn-default.edit{type: 'button', '@click': 'onEditExerciseSet(set)'}
+                  %span.glyphicon.glyphicon-pencil
+                %button.btn.btn-default.show-notes{type: 'button', data: {toggle: 'popover'}, ':data-content': 'eset.notes'}
+                  %span.glyphicon-glyphicon-comment
+                %button.btn.btn-default.destroy{type: 'button', '@click': 'onDestroyExerciseSet(set)'}
+                  %span.glyphicon.glyphicon-trash
+          .panel-footer.clearfix
+            .btn-group.pull-right.exercise-footer-controls
+              %button.btn.btn-default.add-exercise-set{type: 'button', '@click': 'addExerciseSet(exercise)'}
+                %span.glyphicon.glyphicon-plus
+                &nbsp;Add Set
+      .exercises-controls.pull-right
+        %button.btn.btn-default{type: 'button', '@click': 'onAddExercise'}
+          %span.glyphicon.glyphicon-plus
+          &nbsp;Add Exercise
+
+
+
   %div{'is': 'workout', ':workout': 'workout'}
   .controls
     %button.btn.btn-default{'@click': 'showAddExerciseModal'} Add Exercise
