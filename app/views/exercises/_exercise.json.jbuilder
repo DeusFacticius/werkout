@@ -1,4 +1,4 @@
-json.extract! exercise, :id, :name, :notes, :workout_id, :created_at, :updated_at
+json.extract! exercise, :id, :name, :notes, :workout_id, :sort_order, :created_at, :updated_at
 
 if exercise.exercise_sets.loaded?
   json.exercise_sets do

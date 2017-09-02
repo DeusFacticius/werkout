@@ -1,10 +1,19 @@
 class ExercisesController < ApplicationController
   before_action :set_exercise, only: %i[show edit update destroy]
 
+  # Note: actions :index, :new, :create may be nested under /workouts/:workout_id/exercises
+
   # GET /exercises
   # GET /exercises.json
+  # GET /workout/:workout_id/exercises
+  # GET /workout/:workout_id/exercises.json
   def index
-    @exercises = Exercise.all
+    if params[:workout_id].present?
+      @workout = Workout.find(params[:workout_id])
+      @exercises = @workout.exercises
+    else
+      @exercises = Exercise.all
+    end
   end
 
   # GET /exercises/1
@@ -12,8 +21,14 @@ class ExercisesController < ApplicationController
   def show; end
 
   # GET /exercises/new
+  # GET /workouts/:workout_id/exercises/new
   def new
-    @exercise = Exercise.new
+    if params[:workout_id].present?
+      @workout = Workout.find(params[:workout_id])
+      @exercise = @workout.exercises.build
+    else
+      @exercise = Exercise.new
+    end
   end
 
   # GET /exercises/1/edit
@@ -21,8 +36,15 @@ class ExercisesController < ApplicationController
 
   # POST /exercises
   # POST /exercises.json
+  # POST /workout/:workout_id/exercises
+  # POST /workout/:workout_id/exercises.json
   def create
-    @exercise = Exercise.new(exercise_params)
+    if params[:workout_id].present?
+      @workout = Workout.find(params[:workout_id])
+      @exercise = @workout.exercises.build(exercise_params.permit(:name, :notes))
+    else
+      @exercise = Exercise.new(exercise_params)
+    end
 
     respond_to do |format|
       if @exercise.save
@@ -66,7 +88,9 @@ class ExercisesController < ApplicationController
 
   def most_recent_with_name
     name = params[:name]
-    @exercise = Exercise.includes(:exercise_sets).most_recent_with_name!(name)
+    exclude = params[:exclude]
+    @exercise = Exercise.includes(:exercise_sets, :workout).where.not(id: exclude).most_recent_with_name!(name)
+    @include_workout = true
     render :show
   end
 
@@ -78,11 +102,12 @@ class ExercisesController < ApplicationController
     if params[:full]
       src = Exercise.includes(:exercise_sets, :workout)
     end
-    @exercise = Exercise.find(params[:id])
+    @exercise = src.find(params[:id])
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def exercise_params
     params.require(:exercise).permit(:name, :notes, :workout_id)
   end
+
 end

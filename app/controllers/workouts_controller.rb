@@ -65,7 +65,7 @@ class WorkoutsController < ApplicationController
   def set_workout
     query = Workout
     if params[:full]
-      query = query.includes(exercises: [:exercise_sets])
+      query = query.includes(:cardios, exercises: [:exercise_sets])
     end
     @workout = query.find(params[:id])
   end

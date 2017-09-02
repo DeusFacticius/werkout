@@ -1,15 +1,39 @@
 Rails.application.routes.draw do
   #get 'spa/index'
 
-  resources :workouts
-  resources :cardios
-  resources :exercise_sets
+  #resources :workouts, :cardios, :exercise_sets
+  #resources :cardios
+  #resources :exercise_sets
+  # resources :exercises do
+  #   collection do
+  #     get 'most_recent_with_name'
+  #     get 'names'
+  #   end
+  # end
+
   resources :exercises do
     collection do
       get 'most_recent_with_name'
       get 'names'
     end
+    resources :exercise_sets
   end
+
+  resources :workouts, shallow: true do
+    resources :exercises, :cardios
+  end
+
+  resources :exercise_sets, :cardios
+
+  # resources :exercises do
+  #   collection do
+  #     get 'most_recent_with_name'
+  #     get 'names'
+  #   end
+  #   resources :exercise_sets, shallow: true
+  # end
+  #
+  # resources :exercise_sets, :cardios
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

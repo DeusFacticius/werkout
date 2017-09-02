@@ -1,52 +1,101 @@
 #workout-root
   .workout.clearfix{':class': 'workoutIdentifier', ':id': 'workoutIdentifier', 'v-cloak': true}
     %h2
-      {{ workout.split_name }}
-      %small {{ workout.workout_date }}
+      / {{ workout.split_name }}
+      %dateview{':date': 'workout.workout_date' }
+      %small
+        / {{ workout.workout_date }}
+        %dateview{':date': 'workout.workout_date', format: 'LongDate'}
+    %h4 {{ workout.split_name }}
     %p.notes
       {{ workout.notes }}
     %transition-group.exercises{name: 'basic-fx', tag: 'div'}
-      .exercise{'v-for': 'exercise in workout.exercises', ':class': 'identExercise(exercise)', ':id': 'identExercise(exercise)', ':key': 'exercise.id'}
+      .exercise{'v-for': 'exercise in workout.exercises', ':class': 'identExercise(exercise)', ':id': 'identExercise(exercise)', ':key': 'exercise.sort_order', ':data-exercise-id': 'exercise.id'}
         .panel.panel-default
           .panel-heading.clearfix
             %h5.panel-title.pull-left {{ exercise.name }}
             .exercise-header-controls.pull-right
-              %button.btn.btn-default{'@click.capture': 'onDestroyExercise(exercise, $event)'}
-                %span.glyphicon.glyphicon-remove
+              %a.btn.btn-default{role: 'button', tabindex: 0, '@focus': 'onShowRecentExercise(exercise, $event)'}
+                %glyphicon{icon: 'info-sign'}
+              %button.btn.btn-default{'@click': 'onDestroyExercise(exercise, $event)'}
+                %glyphicon{icon: 'remove'}
           .panel-body
             %p.notes {{ exercise.notes }}
           %transition-group.list-group.exercise-sets{name: 'basic-fx', tag: 'ul'}
-            %li.list-group-item.exercise-set.clearfix{'v-for': 'eset in exercise.exercise_sets', ':class': 'identExerciseSet(eset)', ':id': 'identExerciseSet(eset)', ':key': 'eset.id'}
+            %li.list-group-item.exercise-set.clearfix{'v-for': 'eset in exercise.exercise_sets', ':class': 'identExerciseSet(eset)', ':id': 'identExerciseSet(eset)', ':key': 'eset.sort_order'}
               %p.pull-left
                 %span.weight{'v-show': 'isWeighted(eset)'}
                   {{ eset.weight }} &times;
                 %span.reps
                   {{ eset.reps }}
-                %span.glyphicon{':class': 'glyphiconForSet(eset)'}
+                %glyphicon{':icon': 'glyphiconForSet(eset)'}
               .btn-group.pull-right.exercise-set-controls{role: 'group'}
                 %button.btn.btn-default.edit{type: 'button', '@click': 'onEditExerciseSet(eset, $event)'}
-                  %span.glyphicon.glyphicon-pencil
+                  %glyphicon{icon: 'pencil'}
                 %button.btn.btn-default.show-notes{type: 'button', data: {toggle: 'popover'}, ':data-content': 'eset.notes'}
-                  %span.glyphicon.glyphicon-comment
+                  %glyphicon{icon: 'comment'}
                 %button.btn.btn-default.destroy{type: 'button', '@click': 'onDestroyExerciseSet(exercise, eset, $event)'}
-                  %span.glyphicon.glyphicon-trash
+                  %glyphicon{icon: 'trash'}
           .panel-footer.clearfix
             .btn-group.pull-right.exercise-footer-controls
-              %button.btn.btn-default.add-exercise-set{type: 'button', '@click': 'onAddExerciseSet(exercise, $event)'}
-                %span.glyphicon.glyphicon-plus
+              %button.btn.btn-default.add-exercise-set{type: 'button', '@click': 'onAddExerciseSetClicked(exercise, $event)'}
+                %glyphicon{icon: 'plus'}
                 &nbsp;Add Set
+        .hidden.most-recent-container{'v-if': 'exercise.most_recent'}
+          .title
+            %dateview{':date': 'exercise.most_recent.workout.workout_date', format: 'LongDate'}
+          .content
+            %ul.list-group
+              %li.list-group-item{'v-for': 'eset in exercise.most_recent.exercise_sets'}
+                %span.weight{'v-show': 'isWeighted(eset)'}
+                  {{ eset.weight }} &times;
+                %span.reps
+                  {{ eset.reps }}
+                %glyphicon{':icon': 'glyphiconForSet(eset)'}
+
     .exercises-controls.pull-right
       %button.btn.btn-default{type: 'button', data: {toggle: 'modal', target: '#add-exercise-modal'}}
-        %span.glyphicon.glyphicon-plus
+        %glyphicon{icon: 'plus'}
         &nbsp;Add Exercise
 
   / Add new exercise modal
-  #add-exercise-modal{'is': 'modal-dialog', title: 'Add Exercise', 'v-cloak': true}
+  #add-exercise-modal{'is': 'modal-dialog', title: 'Add Exercise', ref: 'addExerciseModal','v-cloak': true}
     %p.ui-front
       %label{for: 'exercise-name-input'}= "Name: "
       %input#exercise-name-input{type: 'text', placeholder: 'name', 'v-model': 'newExerciseName'}
     %button.btn.btn-default{slot: 'footer', data: {dismiss: 'modal'}} Cancel
     %button.btn.btn-primary{slot: 'footer', '@click': 'onAddExercise'} Add Exercise
+
+  #add-set-modal{'is': 'modal-dialog', title: 'Add Set', 'v-cloak': true, ref: 'addSetModal'}
+    .ui-front.row
+      .col-xs-4
+        %semi-spinner{'v-model': 'newSetOptions.weight', ':step': '5'}
+      .col-xs-4
+        %semi-spinner{'v-model': 'newSetOptions.reps', ':max': '30'}
+      .col-xs-4
+        %semi-spinner{'v-model': 'newSetOptions.targetReps', ':max': '30'}
+    %button.btn.btn-default{slot: 'footer', data: {dismiss: 'modal'}} Cancel
+    %button.btn.btn-primary{slot: 'footer', '@click': 'onAddExerciseSet($event)'} Add Set
+
+%script#semi-spinner-template{type: 'text/x-template'}
+  .semi-spinner
+    .row
+      .col-xs-12
+        %button.center-block.btn.btn-default{type: 'button', '@click': 'increment'}
+          %span.glyphicon.glyphicon-chevron-up
+    .row
+      .col-xs-12
+        %input.center-block.spinner-input{type: 'number', ref: 'input', ':value': 'value', '@input': 'updateValue($event.target.value)',
+                            ':min': 'min', ':max': 'max', ':step': 'step'}
+    .row
+      .col-xs-12
+        %button.center-block.btn.btn-default{type: 'button' , '@click': 'decrement'}
+          %span.glyphicon.glyphicon-chevron-down
+
+
+%script#dateview-template{type: 'text/x-template'}
+  %span.dateview
+    {{ formattedDate }}
 
 %script#modal-template{type: 'text/x-template'}
   .modal.fade(role='dialog')
@@ -60,11 +109,143 @@
         .modal-footer
           %slot{name: 'footer'}
 
+%script#glyphicon-template{type: 'text/x-template'}
+  %span.glyphicon{':class': 'glyphiconClass'}
+
 - content_for :scripts do
   :coffee
+    DAYS = [
+      'Sunday'
+      'Monday'
+      'Tuesday'
+      'Wednesday'
+      'Thursday'
+      'Friday'
+      'Saturday'
+    ]
+
+    MONTHS = [
+      'January'
+      'February'
+      'March'
+      'April'
+      'May'
+      'June'
+      'July'
+      'August'
+      'September'
+      'October'
+      'November'
+      'December'
+    ]
+
+    Vue.component('glyphicon', {
+      template: '#glyphicon-template'
+      props: ['icon']
+      computed: {
+        glyphiconClass: () ->
+          'glyphicon-' + this.icon
+      }
+    })
+
     Vue.component('modal-dialog', {
       template: '#modal-template'
       props: ['title']
+      methods: {
+        show: () ->
+          $(this.$el).modal('show')
+        hide: () ->
+          $(this.$el).modal('hide')
+        toggle: () ->
+          $(this.$el).modal('toggle')
+      }
+      mounted: () ->
+        Vue.nextTick () =>
+          modal = $(this.$el)
+          self = this
+          modal.on 'show.bs.modal', (event) ->
+            console.log("show.bs.modal: ", event)
+            self.$emit('show', this, event, self)
+
+    })
+
+    Vue.component('semi-spinner', {
+      template: '#semi-spinner-template'
+      props: {
+        value: {
+          type: Number
+          default: () -> 100
+        }
+        step: {
+          type: Number
+          default: () -> 1
+        }
+        min: {
+          type: Number
+          default: () -> 0
+        }
+        max: {
+          type: Number
+          default: () -> 9999
+        }
+      }
+      methods: {
+        increment: () ->
+          #this.value += this.step
+          this.updateValue(this.value + this.step)
+
+        decrement: () ->
+          #this.value -= this.step
+          this.updateValue(this.value - this.step)
+
+        updateValue: (value) ->
+          this.$refs.input.value = value
+          this.$emit('input', Number(value))
+      }
+    })
+
+    Vue.component('dateview', {
+      template: '#dateview-template'
+      props: {
+        date: {
+          type: String
+          default: () -> new Date().toString()
+        }
+        format: {
+          type: String
+          default: () -> 'DayOfWeek'
+        }
+      }
+      #props: ['date', 'format']
+      computed: {
+        formattedDate: () ->
+          dateObj = this.dateObj
+          return '(loading)' unless dateObj?
+          console.log("Format: ", this.format)
+          switch this.format
+            when 'DayOfWeek' then DAYS[dateObj.getDay()]
+            when 'LongDate' then MONTHS[dateObj.getMonth()] + ' ' + dateObj.getDate() + ', ' + dateObj.getFullYear()
+            else dateObj.toString()
+
+        parsedDateSplat: () ->
+          regex = /(\d{4})-(\d{2})-(\d{2})/
+          return null unless this.date?
+          match = this.date.match(regex)
+          if !match? or match.length < 4
+            console.warn("Error parsing date string -- match data: ", match)
+            return null
+          [year,month,day] = (parseInt(str,10) for str in match[1..3])
+          console.log("Parsed (y/m/d): ", {year, month, day}, " From string: ", this.date)
+          [year,month-1,day,0,0,0,0]
+
+        dateObj: () ->
+          splat = this.parsedDateSplat
+          console.log("Parsed date splat: ", splat)
+          return null unless splat?
+          result = new Date(splat[0], splat[1], splat[2], splat[3], splat[4], splat[5], splat[6])
+          console.log("Date Object: ", result)
+          return result
+      }
     })
 
     this.app = new Vue({
@@ -81,6 +262,11 @@
         }
         exerciseNames: []
         newExerciseName: ''
+        newSetOptions:
+          weight: 0
+          reps: 12
+          targetReps: 12
+          target: null
       }
       computed: {
         workoutIdentifier: () ->
@@ -91,7 +277,7 @@
           eset.weight? && eset.weight > 0
 
         glyphiconForSet: (eset) ->
-          eset.target_reps? && eset.reps >= eset.target_reps && 'glyphicon-ok' || 'glyphicon-remove'
+          eset.target_reps? && eset.reps >= eset.target_reps && 'ok' || 'remove'
 
         identExercise: (exercise) ->
           'exercise-' + exercise.id
@@ -99,23 +285,67 @@
         identExerciseSet: (eset) ->
           'exercise-set-' + eset.id
 
+        showRecentExercisePopover: (exercise, element) ->
+          # No need to initialize the popover if it already exists
+          unless element.is(':data("bs.popover")')
+            console.log("Initializing popover for element: ", element)
+            popoverData = element.closest('.exercise').find('.most-recent-container')
+            title = popoverData.children('.title').html()
+            content = popoverData.children('.content').html()
+            element.popover {
+              container: element.closest('.exercise')
+              content: content
+              title: title
+              html: true
+              trigger: 'focus'
+              placement: 'left'
+            }
+          else
+            console.log("Popover already initialized: ", element.data('bs.popover'))
+          element.popover('show')
+
+        onAddSetModalShown: (element, event, component) ->
+          console.log("onAddSetModalShown: ", element, event, component)
+          btn = $(event.relatedTarget)
+          id = btn.data('exercise-id')
+          this.target_exercise = this.workout.exercises
+
+
+        onShowRecentExercise: (exercise, event) ->
+          console.log('onShowRecentExercise: ', exercise, event)
+          btn = $(event.target).closest('.btn')
+          if exercise.most_recent?
+            # Already done lookup, just show
+            console.log('Already loaded, showing popover...')
+            this.showRecentExercisePopover(exercise.most_recent, btn)
+          else
+            console.log('Data not loaded, sending request...')
+            api.getMostRecentSimilarExercise(exercise).done( (data, jqxhr) =>
+              console.log("Loaded most recent exercise data: ", data)
+              Vue.set(exercise,'most_recent',data)
+              this.$nextTick () ->
+                this.showRecentExercisePopover(exercise.most_recent, btn)
+            ).fail (err, jqxhr) =>
+              console.warn('Error loading most recent exercise data: ', err)
+
+
         onAddExercise: (event) ->
+          console.log("onAddExercise: ", event)
+          # FIXME: Until autocomplete is made into a component, manually retrieve the input value as
+          # the autocomplete plugin does not trigger an 'input' even (thus does not update the data model)
           name = $('#exercise-name-input').val()
-          console.log("onAddExercise: ", name, event)
           unless name? && name
-            console.log("Invalid name: ", this.newExerciseName)
+            console.warn("Invalid name: ", name)
             # TODO: Alert the user
             return false
-          data = {
-            exercise: {
-              workout_id: this.workout.id,
-              name: name
-            }
+          newExercise = {
+            workout_id: this.workout.id
+            name
           }
-          $.post('/exercises.json', data).done( (exercise,jqxhr) =>
+          this.$refs.addExerciseModal.hide()
+          api.saveExercise(newExercise).done( (exercise) =>
             console.log("Exercise added: ", exercise)
             this.workout.exercises.push(exercise)
-            $('#add-exercise-modal').modal('hide')
           ).fail (failData, jqxhr) ->
             console.warn('Exercise creation failed: ', failData, jqxhr)
 
@@ -131,7 +361,7 @@
             return
           btn = $(event.target).closest('button')
           btn.prop('disabled',true)
-          $.ajax('/exercise_sets/' + eset.id + '.json', {method: 'DELETE'}).done( (jqxhr) ->
+          api.destroyExerciseSet(eset).done( (jqxhr) ->
             console.log("Deleted exercise set successfully.")
             exercise.exercise_sets.splice(index,1)
           ).fail (jqxhr) ->
@@ -147,38 +377,46 @@
           btn = $(event.target).closest('button')
           btn.prop('disabled',true)
           self = this
-          $.ajax("/exercises/" + exercise.id + '.json', {method: 'DELETE'}).done( (jqxhr) ->
+          api.destroyExercise(exercise).done( (jqxhr) ->
             console.log("Deleted exercise successfully.")
             self.workout.exercises.splice(index, 1)
           ).fail (jqxhr) ->
             console.log("Error deleting exercise: ", jqxhr)
             btn.prop('disabled', false)
 
-        onAddExerciseSet: (exercise) ->
-          console.log("onAddExerciseSet: ", exercise)
+        onAddExerciseSetClicked: (exercise, event) ->
+          console.log('onAddExerciseSetClicked: ', exercise, event)
+          this.newSetOptions.target = exercise
+          this.$refs.addSetModal.show()
+
+        onAddExerciseSet: (event) ->
+          console.log('onAddExerciseSet: ', event)
+          this.$refs.addSetModal.hide()
+          targetExercise = this.newSetOptions.target
           data = {
-            exercise_set: {
-              exercise_id: exercise.id
-            }
+            weight: this.newSetOptions.weight
+            reps: this.newSetOptions.reps
+            target_reps: this.newSetOptions.targetReps
+            exercise_id: targetExercise.id
           }
-          $.post('/exercise_sets.json', data).done( (newSet,jqxhr) =>
-            console.log("Exercise set created successfully: ", newSet)
-            exercise.exercise_sets.push(newSet)
-          ).fail (err, jqxhr) ->
-            console.log("Error creating new exercise set: ", err, jqxhr)
+          api.saveExerciseSet(data).done( (result) ->
+            console.log("New exercise set saved: ", result)
+            targetExercise.exercise_sets.push(result)
+          ).fail (err) ->
+            console.warn('Failed to save new exercise set: ', err)
 
       }
       created: () ->
-        self = this
         console.log("Loading workout data...")
-        $.getJSON("#{workout_path(@workout)}", {full: true}).then (data,jqxhr) ->
-          self.workout = data
+        api.getWorkout("#{@workout.id}", true).then (data) =>
           console.log("Workout data loaded: ", data)
+          this.workout = data
         console.log("Loading exercise names...")
-        $.getJSON('/exercises/names').done (data, jqxhr) ->
-          self.exerciseNames = data
-          console.log("Loaded exercise names: ", data)
+        api.getExerciseNames().then (data) =>
+          console.log("Exercise names loaded: ", data)
+          this.exerciseNames = data
           $('#exercise-name-input').autocomplete({source: data})
+
     })
     $ () ->
       $('[data-toggle="popover"]').popover()
