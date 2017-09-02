@@ -1,0 +1,51 @@
+%script#semi-spinner-template{type: 'text/x-template'}
+  .semi-spinner
+    .row
+      .col-xs-12
+        %button.center-block.btn.btn-default{type: 'button', '@click': 'increment'}
+          %glyphicon{icon: 'chevron-up'}
+    .row
+      .col-xs-12
+        %input.center-block.spinner-input{type: 'number', ref: 'input', ':value': 'value', '@input': 'updateValue($event.target.value)',
+                            ':min': 'min', ':max': 'max', ':step': 'step'}
+    .row
+      .col-xs-12
+        %button.center-block.btn.btn-default{type: 'button' , '@click': 'decrement'}
+          %glyphicon{icon: 'chevron-down'}
+
+- content_for :scripts do
+  :coffee
+    Vue.component('semi-spinner', {
+      template: '#semi-spinner-template'
+      props: {
+        value: {
+          type: Number
+          default: () -> 100
+        }
+        step: {
+          type: Number
+          default: () -> 1
+        }
+        min: {
+          type: Number
+          default: () -> 0
+        }
+        max: {
+          type: Number
+          default: () -> 9999
+        }
+      }
+      methods: {
+        increment: () ->
+          #this.value += this.step
+          this.updateValue(this.value + this.step)
+
+        decrement: () ->
+          #this.value -= this.step
+          this.updateValue(this.value - this.step)
+
+        updateValue: (value) ->
+          this.$refs.input.value = value
+          this.$emit('input', Number(value))
+      }
+    })

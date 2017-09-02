@@ -1,0 +1,74 @@
+%script#dateview-template{type: 'text/x-template'}
+  %span.dateview
+    {{ formattedDate }}
+
+- content_for :scripts do
+  :coffee
+    DAYS = [
+      'Sunday'
+      'Monday'
+      'Tuesday'
+      'Wednesday'
+      'Thursday'
+      'Friday'
+      'Saturday'
+    ]
+
+    MONTHS = [
+      'January'
+      'February'
+      'March'
+      'April'
+      'May'
+      'June'
+      'July'
+      'August'
+      'September'
+      'October'
+      'November'
+      'December'
+    ]
+
+    Vue.component('dateview', {
+      template: '#dateview-template'
+      props: {
+        date: {
+          type: String
+          default: () -> new Date().toString()
+        }
+        format: {
+          type: String
+          default: () -> 'DayOfWeek'
+        }
+      }
+      #props: ['date', 'format']
+      computed: {
+        formattedDate: () ->
+          dateObj = this.dateObj
+          return '(loading)' unless dateObj?
+          console.log("Format: ", this.format)
+          switch this.format
+            when 'DayOfWeek' then DAYS[dateObj.getDay()]
+            when 'LongDate' then MONTHS[dateObj.getMonth()] + ' ' + dateObj.getDate() + ', ' + dateObj.getFullYear()
+            else dateObj.toString()
+
+        parsedDateSplat: () ->
+          regex = /(\d{4})-(\d{2})-(\d{2})/
+          return null unless this.date?
+          match = this.date.match(regex)
+          if !match? or match.length < 4
+            console.warn("Error parsing date string -- match data: ", match)
+            return null
+          [year,month,day] = (parseInt(str,10) for str in match[1..3])
+          console.log("Parsed (y/m/d): ", {year, month, day}, " From string: ", this.date)
+          [year,month-1,day,0,0,0,0]
+
+        dateObj: () ->
+          splat = this.parsedDateSplat
+          console.log("Parsed date splat: ", splat)
+          return null unless splat?
+          result = new Date(splat[0], splat[1], splat[2], splat[3], splat[4], splat[5], splat[6])
+          console.log("Date Object: ", result)
+          return result
+      }
+    })

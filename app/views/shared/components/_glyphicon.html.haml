@@ -1,0 +1,13 @@
+%script#glyphicon-template{type: 'text/x-template'}
+  %span.glyphicon{':class': 'glyphiconClass'}
+
+- content_for :scripts do
+  :coffee
+    Vue.component('glyphicon', {
+      template: '#glyphicon-template'
+      props: ['icon']
+      computed: {
+        glyphiconClass: () ->
+          'glyphicon-' + this.icon
+      }
+    })
