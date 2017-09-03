@@ -1,0 +1,48 @@
+%script#autocomplete-template{type: 'text/x-template'}
+  %input.form-control.my-autocomplete{type: 'text', ':value': 'value', '@input': 'updateValue($event.target.value)', ':placeholder': 'placeholder'}
+
+- content_for :scripts do
+  :coffee
+    Vue.component('autocomplete', {
+      template: '#autocomplete-template'
+      props: {
+        value: {
+          type: String
+          default: () -> ''
+        }
+        source: {
+          type: Array
+          default: () -> []
+        }
+        placeholder: {
+          type: String
+          default: () -> ''
+        }
+      }
+      methods: {
+        updateValue: (newValue) ->
+          if newValue != this.value
+            $(this.$el).val(newValue)
+            this.$emit('input', newValue)
+
+        getItems: () -> this.source
+
+        filterForTerm: (term) ->
+          lowTerm = term.toLowerCase()
+          results = (item for item in this.source when item.toLowerCase().includes(lowTerm))
+          return results
+
+      }
+      mounted: () ->
+        $(this.$el).autocomplete({
+          source: (request, response) =>
+            response(this.filterForTerm(request.term))
+        }).on('autocompletechange', (event,ui) =>
+          newValue = $(this.$el).val()
+          this.updateValue(newValue)
+        ).on('autocompleteselect', (event, ui) =>
+          event.preventDefault()
+          newValue = ui.item?.value
+          this.updateValue(newValue)
+        )
+    })

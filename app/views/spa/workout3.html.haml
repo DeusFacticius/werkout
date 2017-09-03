@@ -62,7 +62,8 @@
   #add-exercise-modal{'is': 'modal-dialog', title: 'Add Exercise', ref: 'addExerciseModal','v-cloak': true}
     %p.ui-front
       %label{for: 'exercise-name-input'}= "Name: "
-      %input#exercise-name-input{type: 'text', placeholder: 'name', 'v-model': 'newExerciseName'}
+      -# %input#exercise-name-input{type: 'text', placeholder: 'name', 'v-model': 'newExerciseName'}
+      %autocomplete#exercise-name-input{placeholder: 'exercise name', 'v-model': 'newExerciseName', ':source': 'exerciseNames'}
     %button.btn.btn-default{slot: 'footer', data: {dismiss: 'modal'}} Cancel
     %button.btn.btn-primary{slot: 'footer', '@click': 'onAddExercise'} Add Exercise
 
@@ -76,11 +77,12 @@
         %semi-spinner{'v-model': 'newSetOptions.targetReps', ':max': '30'}
     %button.btn.btn-default{slot: 'footer', data: {dismiss: 'modal'}} Cancel
     %button.btn.btn-primary{slot: 'footer', '@click': 'onAddExerciseSet($event)'} Add Set
-      
+
 = render 'shared/components/glyphicon'
 = render 'shared/components/modal'
 = render 'shared/components/dateview'
 = render 'shared/components/semi_spinner'
+= render 'shared/components/autocomplete'
 
 - content_for :scripts do
   :coffee
@@ -252,7 +254,6 @@
         api.getExerciseNames().then (data) =>
           console.log("Exercise names loaded: ", data)
           this.exerciseNames = data
-          $('#exercise-name-input').autocomplete({source: data})
 
     })
     $ () ->
