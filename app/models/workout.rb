@@ -15,4 +15,12 @@ class Workout < ActiveRecord::Base
       b.cardios(cardios.map{|c| c.to_builder })
     end
   end
+
+  def previous_workout
+    @previous_workout ||= Workout.where('workout_date < ?', self.workout_date).order(:workout_date, :desc).first
+  end
+
+  def next_workout
+    @next_workout ||= Workout.where('workout_date > ?', self.workout_date).order(:workout_date).first
+  end
 end

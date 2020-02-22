@@ -11,7 +11,7 @@
  * file per style scope.
  *
  //= require_self
- //= require_tree .
+ //ignore me #= require_tree .
  //= require jquery-ui
  */
 
@@ -27,10 +27,15 @@
   display: none;
 }
 
+.exercise .panel-title {
+  line-height: $line-height-computed + 2*$padding-base-vertical + 2px;
+}
+
 $animDur: 2s;
 
 .basic-fx-enter-active, .basic-fx-leave-active {
-  transition: opacity $animDur;
+  //transition: opacity $animDur;
+  @include transition(opacity $animDur);
 }
 
 .basic-fx-leave-active {
@@ -42,11 +47,11 @@ $animDur: 2s;
 }
 
 .basic-fx-move {
-  transition: transform $animDur;
+  @include transition(transform $animDur);
 }
 
 .exercise {
-  transition: all $animDur;
+  @include transition(all $animDur);
   width: 100%;
 }
 

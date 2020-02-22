@@ -16,4 +16,6 @@
 //= //require turbolinks
 //= require bootstrap-sprockets
 //= require vue
-//= require_tree .
+//#= require_tree .
+//= require api
+

@@ -20,6 +20,11 @@ class SpaController < ApplicationController
   private
 
   def set_workout
-    @workout = Workout.includes(:cardios, exercises: [:exercise_sets]).find(params[:id])
+    id = params[:id]
+    if id
+      @workout = Workout.includes(:cardios, exercises: [:exercise_sets]).find(params[:id])
+    else
+      @workout = Workout.includes(:cardios, exercises: [:exercise_sets]).first
+    end
   end
 end

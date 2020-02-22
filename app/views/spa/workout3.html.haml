@@ -1,3 +1,15 @@
+%nav
+  %ul.pager
+    %li.previous
+      %a{href: '#'}
+        %span{'aria-hidden': true} &larr;
+        Previous
+    %li.next
+      %a{href: '#'}
+        Next
+        %span{'aria-hidden': true} &rarr;
+
+
 #workout-root
   .workout.clearfix{':class': 'workoutIdentifier', ':id': 'workoutIdentifier', 'v-cloak': true}
     %h2
@@ -13,34 +25,37 @@
       .exercise{'v-for': 'exercise in workout.exercises', ':class': 'identExercise(exercise)', ':id': 'identExercise(exercise)', ':key': 'exercise.sort_order', ':data-exercise-id': 'exercise.id'}
         .panel.panel-default
           .panel-heading.clearfix
-            %h5.panel-title.pull-left {{ exercise.name }}
+            %h3.panel-title.pull-left
+              %a{data: {toggle: 'collapse'}, ':data-target': '"#panel-body-" + identExercise(exercise)', role: 'button'}
+                {{ exercise.name }}
             .exercise-header-controls.pull-right
               %a.btn.btn-default{role: 'button', tabindex: 0, '@focus': 'onShowRecentExercise(exercise, $event)'}
                 %glyphicon{icon: 'info-sign'}
               %button.btn.btn-default{'@click': 'onDestroyExercise(exercise, $event)'}
                 %glyphicon{icon: 'remove'}
-          .panel-body
-            %p.notes {{ exercise.notes }}
-          %transition-group.list-group.exercise-sets{name: 'basic-fx', tag: 'ul'}
-            %li.list-group-item.exercise-set.clearfix{'v-for': 'eset in exercise.exercise_sets', ':class': 'identExerciseSet(eset)', ':id': 'identExerciseSet(eset)', ':key': 'eset.sort_order'}
-              %p.pull-left
-                %span.weight{'v-show': 'isWeighted(eset)'}
-                  {{ eset.weight }} &times;
-                %span.reps
-                  {{ eset.reps }}
-                %glyphicon{':icon': 'glyphiconForSet(eset)'}
-              .btn-group.pull-right.exercise-set-controls{role: 'group'}
-                %button.btn.btn-default.edit{type: 'button', '@click': 'onEditExerciseSet(eset, $event)'}
-                  %glyphicon{icon: 'pencil'}
-                %button.btn.btn-default.show-notes{type: 'button', data: {toggle: 'popover'}, ':data-content': 'eset.notes'}
-                  %glyphicon{icon: 'comment'}
-                %button.btn.btn-default.destroy{type: 'button', '@click': 'onDestroyExerciseSet(exercise, eset, $event)'}
-                  %glyphicon{icon: 'trash'}
-          .panel-footer.clearfix
-            .btn-group.pull-right.exercise-footer-controls
-              %button.btn.btn-default.add-exercise-set{type: 'button', '@click': 'onAddExerciseSetClicked(exercise, $event)'}
-                %glyphicon{icon: 'plus'}
-                &nbsp;Add Set
+          .panel-collapse.collapse.in{':id': '"panel-body-" + identExercise(exercise)'}
+            .panel-body
+              %p.notes {{ exercise.notes }}
+            %transition-group.list-group.exercise-sets{name: 'basic-fx', tag: 'ul'}
+              %li.list-group-item.exercise-set.clearfix{'v-for': 'eset in exercise.exercise_sets', ':class': 'identExerciseSet(eset)', ':id': 'identExerciseSet(eset)', ':key': 'eset.sort_order'}
+                %p.pull-left
+                  %span.weight{'v-show': 'isWeighted(eset)'}
+                    {{ eset.weight }} &times;
+                  %span.reps
+                    {{ eset.reps }}
+                  %glyphicon{':icon': 'glyphiconForSet(eset)'}
+                .btn-group.pull-right.exercise-set-controls{role: 'group'}
+                  %button.btn.btn-default.edit{type: 'button', '@click': 'onEditExerciseSet(eset, $event)'}
+                    %glyphicon{icon: 'pencil'}
+                  %button.btn.btn-default.show-notes{type: 'button', data: {toggle: 'popover'}, ':data-content': 'eset.notes'}
+                    %glyphicon{icon: 'comment'}
+                  %button.btn.btn-default.destroy{type: 'button', '@click': 'onDestroyExerciseSet(exercise, eset, $event)'}
+                    %glyphicon{icon: 'trash'}
+            .panel-footer.clearfix
+              .btn-group.pull-right.exercise-footer-controls
+                %button.btn.btn-default.add-exercise-set{type: 'button', '@click': 'onAddExerciseSetClicked(exercise, $event)'}
+                  %glyphicon{icon: 'plus'}
+                  &nbsp;Add Set
         .hidden.most-recent-container{'v-if': 'exercise.most_recent'}
           .title
             %dateview{':date': 'exercise.most_recent.workout.workout_date', format: 'LongDate'}
