@@ -50,7 +50,7 @@ gem 'haml'
 gem 'haml-rails'
 
 # Because the default CSS framework is pretty barren:
-gem 'bootstrap-sass', '~> 3.3.6'
+gem 'bootstrap-sass', '~> 3.4.1'
 
 # Trying out Vue.js....
 gem 'vuejs-rails'
