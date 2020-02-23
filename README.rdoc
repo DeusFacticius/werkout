@@ -1,28 +1,57 @@
-== README
+== Werkout
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+A personal workout log / journal web app targeted for mobile, powered by
+Ruby on Rails, VueJS, and bootstrap.
 
-Things you may want to cover:
+Primarily intended for private / personal use as an upgrade to the traditional
+notebook and pencil.  The backend is designed to agnostic of presentation;
+acting mainly as a persistence layer with sprinkles to support specialized
+queries.
 
-* Ruby version
+The frontend was designed to be a Single-Page Application (SPA), but it lacks a
+proper router, and ultimately, wasn't really needed.
 
-* System dependencies
+Given this was just for my own personal use, it does not have all the polish,
+security, or performance of a commercial application.
 
-* Configuration
+=== Models and Nomenclature
 
-* Database creation
+The data model and nomenclature is designed to reflect my own personal
+system of recording my workouts.
 
-* Database initialization
+In regards to how it is modeled here:
 
-* How to run the test suite
+* An 'exercise set' is a single set (instance) of a particular exercise.  An
+exercise set has a weight (or 0 / null for bodyweight) to indicate the
+resistance used in the set.  It also has both a 'target' number of repetitions
+(the desired / goal number of reps), and an actual number of repetitions.
+As a visual aid, a set in which the target number of reps was achieved, a
+positive 'checkmark' icon is used.  When the target number is not achieved, a
+negative / red 'x' is displayed.
+* An 'exercise' is a particular machine, movement, and is composed of 0 or more
+exercise_sets.
+* A 'cardio' is a single bout of cariovascular exercise.  It has attributes for
+name, duration, resistance level, and calories burned.
+* A 'workout' represents a whole workout session, and has 0 or more exercises,
+and 0 or more 'cardios'.
 
-* Services (job queues, cache servers, search engines, etc.)
+Common among most models are timestamps, and optional notes.
 
-* Deployment instructions
+=== Primary Features
 
-* ...
+* Navigation and controls designed for easy use on small, touch-screen devices.
+Textfields (which require the onscreen keyboard to comandeer a large portion of
+available screen real estate) are minimized in favor of buttons.
+* Building on the previous point, autocomplete is used where possible to save
+from requiring text input.
+* Quick reference popup of the sets from the most recent workout that had a
+matching exercise (To help choose appropriate weights and target reps in the
+current workout).
+* Glyphicons used in favor of text where possible.
 
+=== Warning
 
-Please feel free to use a different markup language if you do not plan to run
-<tt>rake doc:app</tt>.
+This project is incomplete -- there is barely (if any) unit tests, and the code
+is not as clean, commented, or documented up to the standards I uphold in my
+professional work.  This is playground for practice and experimenting, while
+producing a tool I can use in another part of life.
