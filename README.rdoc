@@ -35,9 +35,7 @@ name, duration, resistance level, and calories burned.
 * A 'workout' represents a whole workout session, and has 0 or more exercises,
 and 0 or more 'cardios'.
 
-Common among most models are timestamps, and optional notes.
-
-=== Primary Features
+=== Features
 
 * Navigation and controls designed for easy use on small, touch-screen devices.
 Textfields (which require the onscreen keyboard to comandeer a large portion of
